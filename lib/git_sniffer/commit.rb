@@ -12,8 +12,8 @@ module GitSniffer
 
 		def files
 			lines = `git --git-dir=#{@git_path} ls-tree -r #{@sha}`
-			lines.split('\n').collect do |line|
-				matches = line.match(/(\d+) (\w+) ([a-zA-Z\d]+)\t(\w+)/)
+			lines.split("\n").collect do |line|
+				matches = line.match(/(\d+) (\w+) ([a-zA-Z\d]+)\t(.+)/)
 				Blob.new(@git_path, matches[3], matches[4])
 			end
 		end

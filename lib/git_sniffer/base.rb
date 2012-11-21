@@ -8,8 +8,8 @@ module GitSniffer
 
 		def commits
 			shas = `git --git-dir=#{@path} rev-list --all`
-			shas.split('\n').collect do |sha|
-				Commit.new(@path, sha.chomp)
+			shas.split("\n").collect do |sha|
+				Commit.new(@path, sha)
 			end
 		end
 
