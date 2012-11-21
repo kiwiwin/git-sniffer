@@ -9,6 +9,11 @@ module GitSniffer
 	
 		attr_reader :path
 		lazy_reader :objects
+
+		def commits
+			shas = exec("rev-list --all")
+			shas.split("\n").collect { |sha| Commit.new(self, sha) }
+		end
 		
 		def initialize(git_path)
 			@path = git_path
