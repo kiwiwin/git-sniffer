@@ -7,10 +7,12 @@ module GitSniffer
 		end
 
 		def commits
-			shas = `git --git-dir=#{@path} rev-list --all`
-			shas.split("\n").collect do |sha|
-				Commit.new(@path, sha)
-			end
+			shas = exec("rev-list --all")
+			shas.split("\n").collect { |sha| Commit.new(self, sha) }
+		end
+
+		def exec(command)
+			`git --git-dir=#{@path} #{command}`
 		end
 
 		class << self

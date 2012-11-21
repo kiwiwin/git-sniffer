@@ -4,14 +4,14 @@ module GitSniffer
 		attr_reader :sha
 		attr_reader :name		
 
-		def initialize(git_path, sha, name)
-			@git_path = git_path
+		def initialize(base, sha, name)
+			@base = base
 			@sha = sha
 			@name = name
 		end
 
 		def content
-			`git --git-dir=#{@git_path} cat-file -p #{@sha}`
+			@base.exec("cat-file -p #{@sha}")
 		end
 	end
 end
