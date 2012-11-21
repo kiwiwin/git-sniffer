@@ -1,10 +1,14 @@
 require 'active_support/inflector'
 require_relative 'commit'
 require_relative 'blob'
+require_relative 'lazy'
 
 module GitSniffer
 	class Base
+		include Lazy
+	
 		attr_reader :path
+		lazy_reader :objects
 		
 		def initialize(git_path)
 			@path = git_path
@@ -14,7 +18,7 @@ module GitSniffer
 			`git --git-dir=#{@path} #{command}`
 		end
 
-		def objects
+		def lazy_objects_source
 			res = []
 			Dir.foreach("#{@path}/objects") do |entry|
 				if entry =~ /[a-z0-9]{2}/
