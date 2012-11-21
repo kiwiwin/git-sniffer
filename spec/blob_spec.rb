@@ -4,7 +4,7 @@ describe GitSniffer::Blob do
 		context(:single_commit) do
 			before(:all) do
 				base = GitSniffer::Base.open(fixture_path(:single_commit))
-				@blob = base.commits[0].files[0]
+				@blob = base.commits[0].blobs[0]
 			end
 
 			it "should return readme as file name" do

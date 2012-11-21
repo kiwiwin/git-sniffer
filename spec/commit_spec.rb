@@ -16,7 +16,7 @@ describe GitSniffer::Commit do
 		end
 
 		it "should return 1 blob" do
-			@commits[0].files.size.should == 1
+			@commits[0].blobs.size.should == 1
 		end
 
 	end
@@ -36,7 +36,7 @@ describe GitSniffer::Commit do
 		end
 		
 		it "should return 2 blob" do
-		    @commits[0].files.size.should == 3
+		    @commits[0].blobs.size.should == 3
 		end
 	end
 end
