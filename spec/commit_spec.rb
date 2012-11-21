@@ -20,4 +20,23 @@ describe GitSniffer::Commit do
 		end
 
 	end
+	
+	context(:simple_java) do
+	    before(:all) do
+			base = GitSniffer::Base.open(fixture_path(:simple_java))
+			@commits = base.commits	    
+		end
+		
+		it "should return 3 commit" do
+		    @commits.size.should == 3
+		end
+		
+		it "should return 00cb610e642d0fac84ad4dac479b98ef447099cd for second commit sha" do
+		    @commits[1].sha.should == "00cb610e642d0fac84ad4dac479b98ef447099cd"
+		end
+		
+		it "should return 2 blob" do
+		    @commits[0].files.size.should == 3
+		end
+	end
 end
