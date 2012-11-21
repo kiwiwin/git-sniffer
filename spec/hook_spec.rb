@@ -8,7 +8,7 @@ describe GitSniffer::Hook do
 			end	
 
 			it "get all blobs size" do
-				@hook.add_commit_hook(:blobs, lambda { |hook, commit| commit.blobs.size } )
+				@hook.add_commit_hook(:blobs => lambda { |hook, commit| commit.blobs.size } )
 				@hook.run
 				@hook.all_commit_result.should ==  {"c025dce424130b546754eb391a13eb601c4a243c"=>{:blobs=>3},
 																						"00cb610e642d0fac84ad4dac479b98ef447099cd"=>{:blobs=>3},
@@ -16,7 +16,7 @@ describe GitSniffer::Hook do
 			end		  
 
 			it "get all messages" do
-				@hook.add_commit_hook(:message, lambda { |hook, commit| commit.message } )
+				@hook.add_commit_hook(:message => lambda { |hook, commit| commit.message } )
 				@hook.run
 				@hook.all_commit_result.should == {
 																	"c025dce424130b546754eb391a13eb601c4a243c"=>{:message=>"say bye after say hello"}, 
@@ -25,7 +25,7 @@ describe GitSniffer::Hook do
 			end
 
 			it "get lines for each file" do
-				@hook.add_blob_hook(:lines, lambda { |blob| blob.content.split("\n").size } )
+				@hook.add_blob_hook(:lines => lambda { |blob| blob.content.split("\n").size } )
 				@hook.run
 				@hook.all_blob_result.should == {	"473e66f56cf9dcb2b875961937148e159b70d2b7"=>{:lines=>19},
  																					"f050e6b7dfe73d6af9d867e3622c0cae3e818207"=>{:lines=>15},
@@ -35,13 +35,13 @@ describe GitSniffer::Hook do
 			end
 
 			it "get lines for each commit" do
-				@hook.add_blob_hook(:lines, lambda { |blob| blob.content.split("\n").size } )
+				@hook.add_blob_hook(:lines => lambda { |blob| blob.content.split("\n").size } )
 				commit_proc = Proc.new do |hook, commit|
 					commit.blobs.inject(0) do |res, blob|
 						res += hook.blob_result(blob.sha, :lines)
 					end
 				end
-				@hook.add_commit_hook(:lines, commit_proc)
+				@hook.add_commit_hook(:lines => commit_proc)
 				@hook.run
 				@hook.all_commit_result.should == {"c025dce424130b546754eb391a13eb601c4a243c"=>{:lines=>32},
  																					 "00cb610e642d0fac84ad4dac479b98ef447099cd"=>{:lines=>23},
