@@ -6,6 +6,7 @@ module GitSniffer
 
 		attr_reader :sha
 		lazy_reader :type
+		lazy_reader :content
 
 		def initialize(base, sha)
 			@base = base
@@ -16,16 +17,16 @@ module GitSniffer
 			@base.exec("cat-file -t #{@sha}").chomp
 		end
 
+		def lazy_content_source
+			@base.exec("cat-file -p #{@sha}")
+		end
+
 		def hash
 			@sha.hash
 		end
 
 		def eql?(other)
 			self.class.equal?(other.class) && @sha == other.sha
-		end
-
-		def content
-			@base.exec("cat-file -p #{@sha}")
 		end
 	end
 end
