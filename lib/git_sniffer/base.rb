@@ -1,6 +1,7 @@
 require 'active_support/inflector'
 require_relative 'commit'
 require_relative 'blob'
+require_relative 'tree'
 require_relative 'lazy'
 
 module GitSniffer
@@ -22,13 +23,21 @@ module GitSniffer
 		def exec(command)
 			`git --git-dir=#{@path} #{command}`
 		end
+	
+		def object(sha)
+			objects[sha]
+		end
+
+		def shas
+			objects.keys
+		end
 
 		def lazy_objects_source
-			res = []
+			res = {}
 			Dir.foreach("#{@path}/objects") do |entry|
 				if entry =~ /[a-z0-9]{2}/
 					Dir.foreach("#{@path}/objects/#{entry}") do |filename|
-						res << "#{entry}#{filename}" if filename =~ /[a-z0-9]{38}/
+						res["#{entry}#{filename}"] = create_type_object("#{entry}#{filename}") if filename =~ /[a-z0-9]{38}/
 					end
 				end
 			end
@@ -41,9 +50,13 @@ module GitSniffer
 			end
 		end
 
-	private
 		def object_type(sha)
 			exec("cat-file -t #{sha}").chomp
+		end
+
+	private
+		def create_type_object(sha)
+			eval("GitSniffer::#{object_type(sha).capitalize}").new(self, sha)
 		end
 
 		def method_missing(method_id, *args, &block)
@@ -53,8 +66,8 @@ module GitSniffer
 		end
 
 		def type_objects(type)
-			objects.inject([]) do |res, sha|
-				res << eval("GitSniffer::#{type.capitalize}").new(self, sha) if object_type(sha) == type; res
+			objects.inject([]) do |res, object|
+				res << object[1] if object_type(object[0]) == type; res
 			end
 		end
 	end
