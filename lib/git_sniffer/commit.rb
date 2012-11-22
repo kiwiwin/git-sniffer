@@ -1,8 +1,12 @@
 require_relative 'blob'
 require_relative 'git_object'
+require_relative 'lazy'
 
 module GitSniffer
 	class Commit < GitObject
+		include Lazy
+		lazy_reader :message
+
 		def initialize(base, sha)
 			super(base, sha)
 		end
@@ -15,7 +19,7 @@ module GitSniffer
 			end
 		end
 
-		def message
+		def lazy_message_source
 			@base.exec("cat-file -p #{@sha}").split("\n")[-1]
 		end
 	end
