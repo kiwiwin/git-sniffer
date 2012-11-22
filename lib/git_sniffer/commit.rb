@@ -21,12 +21,17 @@ module GitSniffer
 			end
 		end
 
+		private
+		def content
+			@base.exec("cat-file -p #{@sha}")
+		end
+
 		def lazy_message_source
-			@base.exec("cat-file -p #{@sha}").split("\n")[-1]
+			content.split("\n")[-1]
 		end
 
 		def lazy_commit_date_source
-			@base.exec("cat-file -p #{@sha}") =~ /committer.+> (\d+) [+-]\d{4}/
+			content =~ /committer.+> (\d+) [+-]\d{4}/
 			Time.at($1.to_i).to_date
 		end
 	end
