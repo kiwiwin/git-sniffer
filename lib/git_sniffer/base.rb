@@ -10,11 +10,6 @@ module GitSniffer
 	
 		attr_reader :path
 		lazy_reader :sha_objects
-
-		def commits
-			shas = exec("rev-list --all")
-			shas.split("\n").collect { |sha| Commit.new(self, sha) }
-		end
 		
 		def initialize(git_path)
 			@path = git_path
@@ -65,14 +60,16 @@ module GitSniffer
 
 		def method_missing(method_id, *args, &block)
 			types = ["blobs", "commits", "trees"]
-			return type_objects(method_id.to_s.singularize) if types.include? method_id.to_s
+			return type_objects(method_id.to_s.singularize, args[0]) if types.include? method_id.to_s
 			super
 		end
 
-		def type_objects(type)
-			sha_objects.inject([]) do |res, object|
-				res << object[1] if object_type(object[0]) == type; res
+		def type_objects(type, opts)
+			res = objects.inject([]) do |res, object|
+				res << object if object.type == type; res
 			end
+			res = res.sort_by { |object| object.send opts[:sort_by] } if opts && opts[:sort_by]
+			res
 		end
 	end
 end
