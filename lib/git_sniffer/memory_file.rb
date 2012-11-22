@@ -1,6 +1,6 @@
 module GitSniffer
 	class MemoryFile
-		def self.create(content) 
+		def self.involve(content) 
 			path = new_path
 			File.open(path, "w+") { |file| file.puts(content) };
 			result = yield path

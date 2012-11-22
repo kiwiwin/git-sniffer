@@ -13,7 +13,7 @@ module GitSniffer
 		private
 
 		def self.run_command(content, rule)
-			MemoryFile.create(content) { |path| ThirdPartyHelper.run_checkstyle(rule, path) }
+			MemoryFile.involve(content) { |path| ThirdPartyHelper.run_checkstyle(rule, path) }
 		end
 	end
 end
