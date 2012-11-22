@@ -1,23 +1,21 @@
 module GitSniffer
 	class MemoryFile
-		def initialize(content)
-			@@id += 1
-			file = File.new(path, "w+");
-			file.puts(content)
-			file.close
-		end
-
-		def path
-			BASE_PATH + @@id.to_s
-		end
-
-		def delete
+		def self.create(content) 
+			path = new_path
+			File.open(path, "w+") { |file| file.puts(content) };
+			result = yield path
 			File.delete(path)
+			result
 		end
 
 		private
 
-		BASE_PATH = "/dev/shm/git_sniffer_tmp_"
+		def self.new_path
+			@@id += 1
+			BASE_PATH + @@id.to_s
+		end
+
 		@@id = 0
+		BASE_PATH = "/dev/shm/git_sniffer_tmp_"
 	end
 end

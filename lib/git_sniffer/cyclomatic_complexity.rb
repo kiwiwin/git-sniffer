@@ -9,10 +9,7 @@ module GitSniffer
 		private
 
 		def self.run_command(content)
-			file = MemoryFile.new(content)
-			result = ThirdPartyHelper.run_checkstyle("cc.xml", file.path)
-			file.delete
-			result
+			MemoryFile.create(content) { |path| ThirdPartyHelper.run_checkstyle("cc.xml", path) }
 		end
 	end
 end
