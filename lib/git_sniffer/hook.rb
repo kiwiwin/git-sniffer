@@ -4,7 +4,7 @@ require_relative 'base'
 module GitSniffer
 	class HookResult
 		def initialize
-			@result = Hash.new({})
+			@result = {}
 		end
 
 		def get_object_attr(object, attr)
@@ -12,12 +12,12 @@ module GitSniffer
 		end
 
 		def set_object_attr(object, attr, value)
-			@result[object] = Hash.new if @result[object].size == 0
+			@result[object] ||= {}
 			@result[object][attr] = value
 		end
 
 		def has_object_attr?(object, attr)
-			@result[object][attr]
+			@result[object] && @result[object][attr]
 		end
 	end
 
