@@ -3,22 +3,20 @@ require_relative 'base'
 
 module GitSniffer
 	class HookResult
-		def initialize(objects)
-			@result = {}
-			objects.each { |object| @result[object] = {} }
+		def initialize
+			@result = Hash.new({})
 		end
 
 		def get_object_attr(object, attr)
 			@result[object][attr]
 		end
 
-		def set_object_attr(object, attr_name, result)
-			@result[object] ||= {}
-			@result[object][attr_name] = result
+		def set_object_attr(object, attr, value)
+			@result[object] = Hash.new if @result[object].size == 0
+			@result[object][attr] = value
 		end
 
 		def has_object_attr?(object, attr)
-			return false if !@result[object]
 			@result[object][attr]
 		end
 	end
@@ -45,7 +43,7 @@ module GitSniffer
 	class Hook
 		def initialize(base)
 			@base = base
-			@hook_result = HookResult.new(@base.objects)
+			@hook_result = HookResult.new
 			@hook_callback = HookCallback.new
 		end
 
