@@ -23,5 +23,9 @@ module GitSniffer
 		def eql?(other)
 			self.class.equal?(other.class) && @sha == other.sha
 		end
+
+		def content
+			@base.exec("cat-file -p #{@sha}")
+		end
 	end
 end

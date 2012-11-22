@@ -22,10 +22,6 @@ module GitSniffer
 		end
 
 		private
-		def content
-			@base.exec("cat-file -p #{@sha}")
-		end
-
 		def lazy_message_source
 			content.split("\n")[-1]
 		end
