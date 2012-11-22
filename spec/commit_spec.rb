@@ -27,8 +27,8 @@ describe GitSniffer::Commit do
 	
 	context(:simple_java) do
 	    before(:all) do
-			base = GitSniffer::Base.open(fixture_path(:simple_java))
-			@commits = base.commits	    
+			@base = GitSniffer::Base.open(fixture_path(:simple_java))
+			@commits = @base.commits	    
 		end
 		
 		it "should return 3 commit" do
@@ -41,6 +41,10 @@ describe GitSniffer::Commit do
 		
 		it "should return 2 blob" do
 		    @commits[0].blobs.size.should == 3
+		end
+
+		it "test commit_date" do
+				@base.object("c025dce424130b546754eb391a13eb601c4a243c").commit_date.should == Time.at(1353472551).to_date
 		end
 	end
 end
