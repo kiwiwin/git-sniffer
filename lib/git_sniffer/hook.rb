@@ -3,23 +3,23 @@ require_relative 'base'
 
 module GitSniffer
 	class HookResult
-		def initialize(shas)
+		def initialize(objects)
 			@result = {}
-			shas.each { |sha| @result[sha] = {} }
+			objects.each { |object| @result[object] = {} }
 		end
 
 		def get_object_attr(object, attr)
-			@result[object.sha][attr]
+			@result[object][attr]
 		end
 
 		def set_object_attr(object, attr_name, result)
-			@result[object.sha] ||= {}
-			@result[object.sha][attr_name] = result
+			@result[object] ||= {}
+			@result[object][attr_name] = result
 		end
 
 		def has_object_attr?(object, attr)
-			return false if !@result[object.sha]
-			@result[object.sha][attr]
+			return false if !@result[object]
+			@result[object][attr]
 		end
 	end
 
@@ -45,7 +45,7 @@ module GitSniffer
 	class Hook
 		def initialize(base)
 			@base = base
-			@hook_result = HookResult.new(@base.shas)
+			@hook_result = HookResult.new(@base.objects)
 			@hook_callback = HookCallback.new
 		end
 
@@ -60,7 +60,7 @@ module GitSniffer
 		def type_results(type)
 			attr_names = @hook_callback.get_type_callbacks(type).keys
 			@base.send(type.pluralize).inject({}) do |res, object|
-				res[object.sha] = attr_names.inject({}) do |res, attr_name| 
+				res[object] = attr_names.inject({}) do |res, attr_name| 
 					res[attr_name] = object_attr_result(object, attr_name); res
 				end
 				res

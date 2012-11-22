@@ -15,5 +15,13 @@ module GitSniffer
 		def lazy_type_source
 			@base.exec("cat-file -t #{@sha}").chomp
 		end
+
+		def hash
+			@sha.hash
+		end
+
+		def eql?(other)
+			self.class.equal?(other.class) && @sha == other.sha
+		end
 	end
 end
