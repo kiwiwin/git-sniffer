@@ -7,6 +7,10 @@ describe GitSniffer::Commit do
 			@commits = base.commits
 		end
 
+		it "should return commit for type" do
+			@commits[0].type.should == "commit"
+		end
+
 		it "should return 1 commit" do
 			@commits.size.should == 1
 		end

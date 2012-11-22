@@ -9,7 +9,7 @@ module GitSniffer
 		include Lazy
 	
 		attr_reader :path
-		lazy_reader :objects
+		lazy_reader :sha_objects
 
 		def commits
 			shas = exec("rev-list --all")
@@ -25,14 +25,25 @@ module GitSniffer
 		end
 	
 		def object(sha)
-			objects[sha]
+			sha_objects[sha]
 		end
 
 		def shas
-			objects.keys
+			sha_objects.keys
 		end
 
-		def lazy_objects_source
+		def objects
+			sha_objects.values
+		end
+
+		class << self
+			def open(git_path)
+				Base.new(git_path)
+			end
+		end
+
+	private
+		def lazy_sha_objects_source
 			res = {}
 			Dir.foreach("#{@path}/objects") do |entry|
 				if entry =~ /[a-z0-9]{2}/
@@ -44,29 +55,22 @@ module GitSniffer
 			res
 		end
 
-		class << self
-			def open(git_path)
-				Base.new(git_path)
-			end
+		def create_type_object(sha)
+			eval("GitSniffer::#{object_type(sha).capitalize}").new(self, sha)
 		end
 
 		def object_type(sha)
 			exec("cat-file -t #{sha}").chomp
 		end
 
-	private
-		def create_type_object(sha)
-			eval("GitSniffer::#{object_type(sha).capitalize}").new(self, sha)
-		end
-
 		def method_missing(method_id, *args, &block)
-			types = ["blobs", "commits"]
+			types = ["blobs", "commits", "trees"]
 			return type_objects(method_id.to_s.singularize) if types.include? method_id.to_s
 			super
 		end
 
 		def type_objects(type)
-			objects.inject([]) do |res, object|
+			sha_objects.inject([]) do |res, object|
 				res << object[1] if object_type(object[0]) == type; res
 			end
 		end

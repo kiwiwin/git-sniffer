@@ -3,13 +3,9 @@ require_relative 'spec_helper'
 describe GitSniffer::Hook do
 		context(:simple_java) do
 	    before(:each) do
-				@base = GitSniffer::Base.open(fixture_path(:simple_java))
-				@hook = GitSniffer::Hook.new(@base)
+				base = GitSniffer::Base.open(fixture_path(:simple_java))
+				@hook = GitSniffer::Hook.new(base)
 			end	
-	
-			it "test blobs type" do
-				@base.blobs.size.should == 5
-			end
 
 			it "get all blobs size" do
 				@hook.add_commit_hook(:blobs){ |hook, commit| commit.blobs.size }
@@ -39,7 +35,7 @@ describe GitSniffer::Hook do
 				@hook.add_blob_hook(:lines) { |hook, blob| blob.content.split("\n").size }
 				@hook.add_commit_hook(:lines) do |hook, commit|
 					commit.blobs.inject(0) do |res, blob|
-						res += hook.blob_attr_result(blob.sha, :lines)
+						res += hook.blob_lines_result(blob)
 					end
 				end
 				@hook.commit_results.should == {"c025dce424130b546754eb391a13eb601c4a243c"=>{:lines=>32},
@@ -50,7 +46,7 @@ describe GitSniffer::Hook do
 			it "get maxline for each commit blob" do
 				@hook.add_commit_hook(:max_lines) do |hook, commit|
 					commit.blobs.inject(0) do |res, blob|
-						res = [res, hook.blob_attr_result(blob.sha, :lines)].max
+						res = [res, hook.blob_lines_result(blob)].max
 					end
 				end
 				@hook.add_blob_hook(:lines) { |hook, blob| blob.content.split("\n").size }

@@ -1,19 +1,17 @@
 require_relative 'blob'
+require_relative 'git_object'
 
 module GitSniffer
-	class Commit
-		attr_reader :sha
-		
+	class Commit < GitObject
 		def initialize(base, sha)
-			@base = base
-			@sha = sha
+			super(base, sha)
 		end
 
 		def blobs
 			lines = @base.exec("ls-tree -r #{@sha}")
 			lines.split("\n").collect do |line|
 				matches = line.match(/(\d+) (\w+) ([a-zA-Z\d]+)\t(.+)/)
-				Blob.new(@base, matches[3])
+				@base.object(matches[3])
 			end
 		end
 

@@ -7,6 +7,10 @@ describe GitSniffer::Blob do
 				@blob = base.commits[0].blobs[0]
 			end
 
+			it "should return blob as type" do
+				@blob.type.should == "blob"
+			end
+
 			it "should return readme as file name" do
 				@blob.name.should == "readme"
 			end

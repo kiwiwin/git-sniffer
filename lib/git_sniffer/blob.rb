@@ -1,16 +1,14 @@
 require_relative 'lazy'
+require_relative 'git_object'
 
 module GitSniffer
-	class Blob
+	class Blob < GitObject
 		include Lazy
 
-		attr_reader :git_path
-		attr_reader :sha
 		lazy_reader :name		
 
 		def initialize(base, sha)
-			@base = base
-			@sha = sha
+			super(base, sha)
 		end
 
 		def content

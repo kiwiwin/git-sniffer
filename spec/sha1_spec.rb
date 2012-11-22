@@ -11,7 +11,7 @@ describe GitSniffer::Base do
 		end
 	
 		it "should contain e923f854774fc767cb9e02a3d0d616d188a81c53" do
-			@base.objects.include?("e923f854774fc767cb9e02a3d0d616d188a81c53").should == true
+			@base.shas.include?("e923f854774fc767cb9e02a3d0d616d188a81c53").should == true
 		end
 
 		it "should return 1 blobs" do

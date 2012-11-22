@@ -1,10 +1,9 @@
-module GitSniffer
-	class Tree
-		attr_reader :sha
+require_relative 'git_object'
 
+module GitSniffer
+	class Tree < GitObject
 		def initialize(base, sha)
-			@base = base
-			@sha = sha
+			super(base, sha)
 		end
 	end
 end
