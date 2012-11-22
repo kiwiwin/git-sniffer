@@ -1,8 +1,8 @@
 require_relative 'lazy'
-require_relative 'git_object'
+require_relative 'object'
 
 module GitSniffer
-	class Blob < GitObject
+	class Blob < GitSniffer::Object
 		include Lazy
 
 		lazy_reader :name		
