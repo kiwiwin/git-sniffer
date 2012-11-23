@@ -2,82 +2,41 @@ require 'active_support/inflector'
 require_relative 'base'
 
 module GitSniffer
-	class HookResult
-		def initialize
-			@result = {}
+	module Hook
+		def self.included(base)
+			base.extend(ClassMethods)
 		end
 
-		def get_object_attr(object, attr)
-			@result[object][attr]
+		def eigenclass
+			class << self; self; end
 		end
 
-		def set_object_attr(object, attr, value)
-			@result[object] ||= {}
-			@result[object][attr] = value
-		end
-
-		def has_object_attr?(object, attr)
-			@result[object] && @result[object][attr]
-		end
-	end
-
-	class HookCallback
-		def initialize
-			@hooks = {}
-		end
-
-		def add_callback(type, attr, &callback)
-			@hooks[type] ||= {}
-			@hooks[type][attr] = callback
-		end
-
-		def get_callback(object, attr)
-			@hooks[object.type.singularize][attr]
-		end
-
-		def get_type_callbacks(type)
-			@hooks[type]
-		end
-
-		def get_type_callback_names(type)
-			@hooks[type].keys
-		end
-	end
-
-	class Hook
-		def initialize(base)
-			@base = base
-			@hook_result = HookResult.new
-			@hook_callback = HookCallback.new
-		end
-
-		private
-		def method_missing(method_id, *args, &block) 
-			return @hook_callback.add_callback($1, *args, &block) if method_id.to_s =~ /^add_(\w+)_hook$/
-			return type_results($1) if method_id.to_s =~ /^(\w+)_results$/
-			return object_attr_result(*args, $2) if method_id.to_s =~ /^(\w+)_(\w+)_result$/
+		def method_missing(method, *args, &block)
+			if method =~ /hook_(.+)/
+				eigenclass.instance_exec($1) do |attr|
+					lazy_reader "hook_#{attr}".to_sym
+					define_method "lazy_hook_#{attr}_source" do
+						self.class.get_hook(attr.to_sym).call self
+					end
+				end
+				return send method
+			end
 			super
 		end
 
-		def type_results(type)
-			attr_names = @hook_callback.get_type_callback_names(type)
-			@base.send(type.pluralize).inject({}) do |res, object|
-				res[object] = attr_names.inject({}) do |res, attr_name| 
-					res[attr_name] = object_attr_result(object, attr_name); res
-				end
-				res
+		module ClassMethods
+			def get_hook(name)
+				@hooks[name]
 			end
-		end
 
-		def object_attr_result(object, attr_name)
-			attr_name_sym = attr_name.to_sym
-			calculate_attr_result(object, attr_name_sym) if !@hook_result.has_object_attr?(object, attr_name_sym)
-			@hook_result.get_object_attr(object, attr_name_sym)
-		end
+			def add_hook(name, &block)
+				@hooks ||= {}
+				@hooks[name] = block
+			end
 
-		def calculate_attr_result(object, attr_name)
-			hook = @hook_callback.get_callback(object, attr_name)
-			@hook_result.set_object_attr(object, attr_name, hook.call(self, object))			
+			def remove_hook(name)
+				@hooks.delete(name)
+			end
 		end
 	end
 end

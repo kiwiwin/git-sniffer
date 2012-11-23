@@ -35,6 +35,10 @@ module GitSniffer
 			def open(git_path)
 				Base.new(git_path)
 			end
+
+			def get_class(type)
+				eval("GitSniffer::#{type.capitalize}")
+			end
 		end
 
 	private
@@ -51,7 +55,7 @@ module GitSniffer
 		end
 
 		def create_type_object(sha)
-			eval("GitSniffer::#{object_type(sha).capitalize}").new(self, sha)
+			self.class.get_class(object_type(sha)).new(self, sha)
 		end
 
 		def object_type(sha)

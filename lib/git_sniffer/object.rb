@@ -1,7 +1,9 @@
 require_relative 'lazy'
+require_relative 'hook'
 
 module GitSniffer
 	class Object
+		include Hook
 		include Lazy
 
 		attr_reader :sha
