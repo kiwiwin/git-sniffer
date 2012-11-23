@@ -30,5 +30,15 @@ module GitSniffer
 		def eql?(other)
 			self.class.equal?(other.class) && @sha == other.sha
 		end
+
+		class << self
+			def create_object(base, sha)
+				eval("GitSniffer::#{object_type(base, sha)}").new(base, sha)		
+			end
+
+			def object_type(base, sha)
+				base.exec("cat-file -t #{sha}").chomp.capitalize
+			end
+		end
 	end
 end

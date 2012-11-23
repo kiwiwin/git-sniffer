@@ -35,10 +35,6 @@ module GitSniffer
 			def open(git_path)
 				Base.new(git_path)
 			end
-
-			def get_class(type)
-				eval("GitSniffer::#{type.capitalize}")
-			end
 		end
 
 	private
@@ -47,19 +43,13 @@ module GitSniffer
 			Dir.foreach("#{@path}/objects") do |entry|
 				if entry =~ /[a-z0-9]{2}/
 					Dir.foreach("#{@path}/objects/#{entry}") do |filename|
-						res["#{entry}#{filename}"] = create_type_object("#{entry}#{filename}") if filename =~ /[a-z0-9]{38}/
+						if filename =~ /[a-z0-9]{38}/
+							res["#{entry}#{filename}"] = GitSniffer::Object.create_object(self, "#{entry}#{filename}") 
+						end
 					end
 				end
 			end
 			res
-		end
-
-		def create_type_object(sha)
-			self.class.get_class(object_type(sha)).new(self, sha)
-		end
-
-		def object_type(sha)
-			exec("cat-file -t #{sha}").chomp
 		end
 
 		def method_missing(method_id, *args, &block)
