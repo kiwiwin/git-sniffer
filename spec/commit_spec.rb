@@ -42,7 +42,7 @@ describe GitSniffer::Commit do
 		end
 
 		it "test commit_date" do
-				@commit.commit_date.should == Time.at(1353472551).to_date
+				@commit.commit_date.should == Time.at(1353472551).to_datetime
 		end
 	end
 end

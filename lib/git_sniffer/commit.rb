@@ -28,7 +28,7 @@ module GitSniffer
 
 		def lazy_commit_date_source
 			content =~ /committer.+> (\d+) [+-]\d{4}/
-			Time.at($1.to_i).to_date
+			Time.at($1.to_i).to_datetime
 		end
 	end
 end

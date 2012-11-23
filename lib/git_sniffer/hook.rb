@@ -38,6 +38,10 @@ module GitSniffer
 		def get_type_callbacks(type)
 			@hooks[type]
 		end
+
+		def get_type_callback_names(type)
+			@hooks[type].keys
+		end
 	end
 
 	class Hook
@@ -56,7 +60,7 @@ module GitSniffer
 		end
 
 		def type_results(type)
-			attr_names = @hook_callback.get_type_callbacks(type).keys
+			attr_names = @hook_callback.get_type_callback_names(type)
 			@base.send(type.pluralize).inject({}) do |res, object|
 				res[object] = attr_names.inject({}) do |res, attr_name| 
 					res[attr_name] = object_attr_result(object, attr_name); res
