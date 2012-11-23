@@ -8,18 +8,15 @@ describe GitSniffer::SingleFileMetric do
 		end
 
 		it "its max cyclomatic complexity should be 4" do
-			parser = /Cyclomatic Complexity is (\d+)/
-			GitSniffer::SingleFileMetric.max(@content, :cc, parser).should == 4
+			GitSniffer::SingleFileMetric.max_cc(@content).should == 4
 		end
 
 		it "its max method length should be 12" do
-			parser = /Method length is (\d+)/
-			GitSniffer::SingleFileMetric.max(@content, :method_length, parser).should == 12
+			GitSniffer::SingleFileMetric.max_method_length(@content).should == 12
 		end
 
 		it "its max parameter number should be 2" do
-			parser = /More than 0 parameters \(found (\d+)\)/
-			GitSniffer::SingleFileMetric.max(@content, :parameter_number, parser).should == 2
+			GitSniffer::SingleFileMetric.max_parameter_number(@content).should == 2
 		end
 	end
 end
