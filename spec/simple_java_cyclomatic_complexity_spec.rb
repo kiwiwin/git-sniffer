@@ -4,9 +4,9 @@ describe GitSniffer::Base do
 
 	before(:each) do
     @base = GitSniffer::Base.open(fixture_path(:simple_java))
-		parser = /Complexity is (\d*)/
+
 		GitSniffer::Blob.add_hook(:cc) do |blob|
-			GitSniffer::SingleFileMetric.max(blob.content, :cc, parser)
+			GitSniffer::SingleFileMetric.max_cc(blob.content)
 		end
 	end
 

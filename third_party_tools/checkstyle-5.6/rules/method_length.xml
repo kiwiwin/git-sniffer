@@ -35,11 +35,12 @@
   <module name="TreeWalker">
     
     <property name="fileExtensions" value=""/>
-
-    <module name="CyclomaticComplexity">
-      <property name="max" value="0"/>
+        
+    <module name="MethodLength">
+        <property name="max" value="0"/>
     </module>  
- 		
- 	</module>
+    
+  </module>
   
 </module>
+
