@@ -1,11 +1,9 @@
-require_relative 'blob'
-require_relative 'object'
-require_relative 'lazy'
 require 'date'
+require_relative 'object'
+require_relative 'blob'
 
 module GitSniffer
 	class Commit < GitSniffer::Object
-		include Lazy
 		lazy_reader :message
 		lazy_reader :commit_date
 
