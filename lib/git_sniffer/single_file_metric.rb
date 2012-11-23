@@ -5,10 +5,10 @@ require_relative 'metric_parsers'
 module GitSniffer
 	class SingleFileMetric
 		private
-		def self.method_missing(method_id, *args, &block) 
-			if method_id =~ /^max_(\w+)$/
-				define_singleton_method(method_id) { |content| max(content, $1) }
-				return send(method_id, *args)
+		def self.method_missing(method, *args, &block) 
+			if method =~ /^max_(\w+)$/
+				define_singleton_method(method) { |content| max(content, $1) }
+				return send(method, *args)
 			end	
 			super
 		end
