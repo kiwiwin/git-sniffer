@@ -17,10 +17,9 @@ module GitSniffer
 		end
 
 		def blobs
-			lines = @base.exec("ls-tree -r #{@sha}")
-			lines.split("\n").collect do |line|
-				matches = line.match(/(\d+) (\w+) ([a-zA-Z\d]+)\t(.+)/)
-				@base.object(matches[3])
+			result = @base.exec("ls-tree -r #{@sha}")
+			result.scan(/\d+ \w+ ([a-z\d]{40})\t.+\n/).collect do |line|
+				@base.object(line[0])
 			end
 		end
 
