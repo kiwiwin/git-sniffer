@@ -12,9 +12,8 @@ module GitSniffer
 		end
 
 		def lazy_name_source
-			@base.exec("rev-list --all --objects").split("\n").each do |line|
-				return $1 if line =~ /^#{@sha} (.*)/ ;
-			end
+			@base.exec("rev-list --all --objects") =~ /#{@sha} (.*)\n/
+			$1
 		end
 	end
 end
