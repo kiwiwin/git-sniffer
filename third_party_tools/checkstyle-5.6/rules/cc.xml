@@ -37,7 +37,7 @@
     <property name="fileExtensions" value=""/>
 
     <module name="CyclomaticComplexity">
-      <property name="max" value="0"/>
+      <property name="max" value="-1"/>
     </module>  
  		
  	</module>
