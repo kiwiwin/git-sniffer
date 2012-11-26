@@ -8,9 +8,9 @@ module GitSniffer
 		private
 		@@parsers = 
 		{
-			"cc" => /Cyclomatic Complexity is (\d+)/,
-			"method_length" => /Method length is (\d+)/, 
-			"parameter_number" => /More than 0 parameters \(found (\d+)\)/
+			"cc" => /:(\d+):\d+: Cyclomatic Complexity is (\d+)/,
+			"method_length" => /:(\d+):\d+: Method length is (\d+)/, 
+			"parameter_number" => /:(\d+):\d+: More than -1 parameters \(found (\d+)\)/
 		}
 	end
 end
