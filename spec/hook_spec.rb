@@ -52,5 +52,25 @@ describe GitSniffer::Hook do
 				@base.object("00cb610e642d0fac84ad4dac479b98ef447099cd").hook_max_lines.should == 15
 				@base.object("e9b02fdf95aa827c0bb2c244622120886a452bab").hook_max_lines.should == 7
 			end
+
+			it "return commits changed lines by committer" do
+				GitSniffer::Commit.add_hook(:changed) do |commit|
+					commit.diff_parent[:insert] + commit.diff_parent[:delete]
+				end
+				author_commits = @base.commits.group_by { |commit| commit.committer }
+				author_commits["kiwi"].inject(0) do |res, commit|
+					res += commit.hook_changed
+				end.should == 26
+			end
+
+			it "return commits insert lines by committer" do
+				GitSniffer::Commit.add_hook(:insert) do |commit|
+					commit.diff_parent[:insert]
+				end
+				author_commits = @base.commits.group_by { |commit| commit.committer }
+				author_commits["kiwi"].inject(0) do |res, commit|
+					res += commit.hook_insert
+				end.should == 25
+			end
 		end
 end
