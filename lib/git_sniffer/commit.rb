@@ -5,9 +5,7 @@ require_relative 'blob'
 module GitSniffer
 	class Commit < GitSniffer::Object
 		lazy_reader :message
-		lazy_reader :commit_date
-		lazy_reader :committer
-		lazy_reader :committer_email
+		lazy_reader :commit_date, :committer, :committer_email, :init => :get_committer_info
 		lazy_reader :parents
 
 		def initialize(base, sha)
@@ -47,21 +45,6 @@ module GitSniffer
 			@committer = $1
 			@committer_email = $2
 			@commit_date = Time.at($3.to_i).to_datetime
-		end
-
-		def lazy_commit_date_source
-			get_committer_info
-			@commit_date
-		end
-
-		def lazy_committer_source
-			get_committer_info
-			@committer
-		end
-
-		def lazy_committer_email_source
-			get_committer_info
-			@committer_email
 		end
 
 		def lazy_parents_source
