@@ -24,14 +24,18 @@ module GitSniffer
 		end
 
 		def diff_parent
+			return Hash.new(0) if parents.size == 0
 			self.class.diff_shortstat(@base, parents[0], self)
 		end
 
 		class << self
 			def diff_shortstat(base, to, from)
-				result = base.exec("diff --shortstat #{to.sha} #{from.sha}")
-	 			result =~ /(\d+) files changed, (\d+) insertions\(\+\), (\d+) deletions\(-\)/
-				{:file => $1.to_i, :insert => $2.to_i, :delete => $3.to_i}
+				result = Hash.new(0)
+				output = base.exec("diff --shortstat #{to.sha} #{from.sha}")
+				result[:file] = $1.to_i if output =~ /(\d+) files? changed/
+				result[:insert] = $1.to_i if output =~ /(\d+) insertions?\(\+\)/
+				result[:delete] = $1.to_i if output =~ /(\d+) deletions?\(-\)/
+				result
 			end
 		end
 
@@ -47,9 +51,20 @@ module GitSniffer
 			@commit_date = Time.at($3.to_i).to_datetime
 		end
 
-		alias lazy_commit_date_source get_committer_info
-		alias lazy_committer_source get_committer_info
-		alias lazy_committer_email_source get_committer_info
+		def lazy_commit_date_source
+			get_committer_info
+			@commit_date
+		end
+
+		def lazy_committer_source
+			get_committer_info
+			@committer
+		end
+
+		def lazy_committer_email_source
+			get_committer_info
+			@committer_email
+		end
 
 		def lazy_parents_source
 			parent_shas = content.scan(/parent ([a-z0-9]{40})/)
