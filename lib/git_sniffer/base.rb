@@ -59,9 +59,7 @@ module GitSniffer
 		end
 
 		def type_objects(type, opts)
-			res = objects.select { |object| object.type == type }
-			res = res.sort_by { |object| object.send opts[:sort_by] } if opts && opts[:sort_by]
-			res
+			objects.select { |object| object.type == type }
 		end
 	end
 end
