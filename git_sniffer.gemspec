@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = GitSniffer::VERSION
   gem.authors       = ["kiwi"]
   gem.email         = ["kiwi.swhite.coder@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{git is a widely used version control system. with this gem, we can analysis the git repository to get useful information.}
+  gem.summary       = %q{gem for analysis git repository information.}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)

@@ -12,3 +12,8 @@ end
 
 task :all => [:spec, :slow] do
 end
+
+task :example do
+	puts `ruby example/*.rb`
+end
+

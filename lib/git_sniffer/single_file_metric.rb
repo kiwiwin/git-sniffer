@@ -19,14 +19,25 @@ module GitSniffer
 		end
 
 		def self.detail(blob, metric)
-			result = Hash.new
 			output = run_command(blob.content, metric)
-			output.scan(MetricParsers.get(metric)) { |line, metric| result[line.to_i] = metric.to_i }
-			result.empty? ? (raise SingleFileCheckError.new(blob.name, output)) : result
+			if nothing_to_check?(output)
+				return { 0 => 0 }
+			end
+			get_result(output, blob, metric)
 		end
 
 		def self.run_command(content, metric)
 			MemoryFile.involve(content) { |path| ThirdPartyHelper.run_checkstyle(metric, path) }
+		end
+
+		def self.nothing_to_check?(output)
+			return output == "Starting audit...\nAudit done.\n"
+		end
+
+		def self.get_result(output, blob, metric)
+			result = Hash.new
+			output.scan(MetricParsers.get(metric)) { |line, metric| result[line.to_i] = metric.to_i }
+			result.empty? ? (raise SingleFileCheckError.new(blob.name, output)) : result
 		end
 	end
 

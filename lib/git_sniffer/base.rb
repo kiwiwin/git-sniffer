@@ -40,17 +40,24 @@ module GitSniffer
 	private
 		def lazy_sha_objects_source
 			res = {}
-			Dir.foreach("#{@path}/objects") do |entry|
-				if entry =~ /[a-z0-9]{2}/
+			Dir.foreach("#{@path}/objects") do |entry|	
+				if entry =~ /(^[a-z0-9]{2}$|pack)/
 					Dir.foreach("#{@path}/objects/#{entry}") do |filename|
-						if filename =~ /[a-z0-9]{38}/
+						if filename =~ /^[a-z0-9]{38}$/
 							res["#{entry}#{filename}"] = GitSniffer::Object.create_object(self, "#{entry}#{filename}") 
+						end
+						if filename =~ /^.*.idx$/
+							exec("verify-pack -v #{@path}/objects/#{entry}/#{filename}").scan(/([a-z0-9]{40}) /).each do |str|
+								res[str[0]] = GitSniffer::Object.create_object(self, str[0]) 
+							end
 						end
 					end
 				end
 			end
 			res
 		end
+
+
 
 		def method_missing(method_id, *args, &block)
 			types = ["blobs", "commits", "trees"]
