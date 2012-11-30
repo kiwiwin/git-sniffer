@@ -7,7 +7,7 @@ puts "#" * 30
 puts 
 
 ##########################FIXTURE#############################
-@base = GitSniffer::Base.open(File.dirname(__FILE__) + "/fixture/JSON-java.git")
+base = GitSniffer::Base.open(File.dirname(__FILE__) + "/fixture/JSON-java.git")
 ##############################################################
 
 GitSniffer::Blob.add_hook(:max_cc) { |blob| GitSniffer::SingleFileMetric.max_cc(blob) }
@@ -21,18 +21,16 @@ GitSniffer::Commit.add_hook(:max_cc) do |commit|
 	end
 end
 
-rows = @base.commits.collect do |commit| 
-	max_cc = 0
+def max_cc(commit)
 	begin
-		max_cc = commit.hook_max_cc		
+		commit.hook_max_cc		
 	rescue GitSniffer::SingleFileCheckError => error
-		puts error.file_name
-		puts error.message
+		puts error.file_name + ": " + error.message
+		0
 	end
-
-	[commit.commit_date, max_cc] 
 end
 
+rows = base.commits.collect { |commit| [commit.commit_date, max_cc(commit)] }
 table = Ruport::Data::Table.new :column_names => ["commit date", "max cyclomatic complexity"],
 								:data => rows
 
