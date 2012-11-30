@@ -14,6 +14,8 @@ task :all => [:spec, :slow] do
 end
 
 task :example do
-	puts `ruby example/*.rb`
+	Dir[File.dirname(__FILE__) + "/example/*.rb"].each do |e|
+		puts `ruby #{e}`
+	end
 end
 
