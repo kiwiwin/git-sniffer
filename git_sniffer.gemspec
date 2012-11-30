@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["kiwi.swhite.coder@gmail.com"]
   gem.description   = %q{git is a widely used version control system. with this gem, we can analysis the git repository to get useful information.}
   gem.summary       = %q{gem for analysis git repository information.}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/kiwiwin/git-sniffer"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
