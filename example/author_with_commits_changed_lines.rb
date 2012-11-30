@@ -1,4 +1,5 @@
 require 'git_sniffer'
+require 'active_support/core_ext'
 require 'ruport'
 
 puts "#" * 30
@@ -15,7 +16,7 @@ GitSniffer::Commit.add_hook(:changed_lines) { |commit| commit.diff_parent[:inser
 author_commits = @base.commits.group_by { |commit| commit.committer }
 
 result = author_commits.inject({}) do |res, author_with_commits|
-	res[author_with_commits[0]] = author_with_commits[1].inject(0) { |res, commit| res += commit.hook_changed_lines }
+	res[author_with_commits[0]] = author_with_commits[1].sum(0) { |commit| commit.hook_changed_lines }
 	res
 end
 
