@@ -17,7 +17,7 @@ module GitSniffer
 						end
 					else
 						define_method(arg) do
-							send opts[:init] if !instance_variable_defined?(ivar)
+							send(opts[:init]) if !instance_variable_defined?(ivar)
 							instance_variable_get(ivar)
 						end						
 					end
