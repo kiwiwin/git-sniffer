@@ -1,4 +1,5 @@
 require_relative 'spec_helper'
+require 'active_support/core_ext'
 
 describe GitSniffer::Hook do
 		context(:simple_java) do
@@ -32,9 +33,7 @@ describe GitSniffer::Hook do
 			it "get lines for each commit" do
 				GitSniffer::Blob.add_hook(:lines) { |blob| blob.content.split("\n").size }
 				GitSniffer::Commit.add_hook(:lines) do |commit| 
-					commit.blobs.inject(0) do |res, blob|
-						res += blob.hook_lines
-					end
+					commit.blobs.sum(0) { |blob| blob.hook_lines }
 				end
 				@base.object("c025dce424130b546754eb391a13eb601c4a243c").hook_lines.should == 32
 				@base.object("00cb610e642d0fac84ad4dac479b98ef447099cd").hook_lines.should == 23
@@ -68,9 +67,7 @@ describe GitSniffer::Hook do
 					commit.diff_parent[:insert]
 				end
 				author_commits = @base.commits.group_by { |commit| commit.committer }
-				author_commits["kiwi"].inject(0) do |res, commit|
-					res += commit.hook_insert
-				end.should == 25
+				author_commits["kiwi"].sum(0) { |commit| commit.hook_insert }.should == 25
 			end
 		end
 end
