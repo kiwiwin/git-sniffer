@@ -6,8 +6,9 @@ require 'git_sniffer/version'
 Gem::Specification.new do |gem|
   gem.name          = "git_sniffer"
   gem.version       = GitSniffer::VERSION
-  gem.authors       = ["kiwi"]
-  gem.email         = ["kiwi.swhite.coder@gmail.com"]
+  gem.authors       = ["kiwi", "itZhy"]
+  gem.email         = ["kiwi.swhite.coder@gmail.com", "zhy1987819@163.com
+"]
   gem.description   = %q{git is a widely used version control system. with this gem, we can analysis the git repository to get useful information.}
   gem.summary       = %q{gem for analysis git repository information.}
   gem.homepage      = "https://github.com/kiwiwin/git-sniffer"
