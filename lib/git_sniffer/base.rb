@@ -2,6 +2,7 @@ require 'active_support/inflector'
 require_relative 'commit'
 require_relative 'blob'
 require_relative 'tree'
+require_relative 'tag'
 require_relative 'lazy'
 
 module GitSniffer
