@@ -41,10 +41,11 @@ module GitSniffer
 		end
 
 		def get_committer_info
-			content =~ /committer (.+) <(.+)> (\d+) [+-]\d{4}/
+			content =~ /committer (.+) <(.+)> (\d+) ([+-])(\d{2})(\d{2})/
 			@committer = $1
 			@committer_email = $2
-			@commit_date = Time.at($3.to_i).to_datetime
+			@commit_date = DateTime.parse(Time.at($3.to_i + 3600 * ($4 + $5).to_i + 60 * ($4 + $6).to_i)
+				.utc.to_s.gsub("UTC", "#{$4}#{$5}#{$6}")) 
 		end
 
 		def lazy_parents_source
