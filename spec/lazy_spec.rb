@@ -12,9 +12,9 @@ end
 class DummyInitLazy
 	include GitSniffer::Lazy
 
-	lazy_reader :hello, :byebye, :init => :calculate
+	lazy_reader :hello, :byebye, :init => :init_hello_and_byebye
 
-	def calculate
+	def init_hello_and_byebye
 		@hello = "hello"
 		@byebye = "byebye"
 	end
@@ -30,9 +30,9 @@ describe DummyLazy do
 	end
 
 	it "should return call lazy_hello_source only once" do
-		@lazy.should_receive(:lazy_hello_source).once
-		@lazy.hello
-		@lazy.hello
+		@lazy.should_receive(:lazy_hello_source).once.and_call_original
+		@lazy.hello.should == "hello"
+		@lazy.hello.should == "hello"
 	end
 end
 
@@ -41,7 +41,14 @@ describe DummyInitLazy do
 		@lazy = DummyInitLazy.new
 	end
 
-	it "should return hello for val1 and byebye for val2" do
+	it "should return hello for hello and byebye for byebye" do
+		@lazy.hello.should == "hello"
+		@lazy.byebye.should == "byebye"
+	end
+
+	it "should called init_hello_and_byebye only once" do
+		@lazy.should_receive(:init_hello_and_byebye).once.and_call_original
+		@lazy.hello.should == "hello"
 		@lazy.hello.should == "hello"
 		@lazy.byebye.should == "byebye"
 	end

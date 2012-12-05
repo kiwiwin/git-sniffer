@@ -63,5 +63,19 @@ describe GitSniffer::Commit do
 		it "should return diff parent is {:file => 2, :insert => 10, :delete => 1}" do
 				@commit.diff_parent.should == {:file => 2, :insert => 10, :delete => 1}
 		end
+
+		it "group by committer" do
+				GitSniffer::Commit.add_hook(:message) { |commit| commit.message }
+				GitSniffer::Commit.add_hook(:changes)	{ |commit| commit.diff_parent[:insert] + commit.diff_parent[:delete] }
+				author_commmits = @base.commits.group_by { |commit| commit.committer }
+				author_commmits.collect do |author, commits|
+#					p author
+					nil
+#					sum = commits.inject(0) { |res, commit| res += commit.hook_changes }
+#					[author, sum]
+				end
+#				p @base.commits.collect { |commit| commit.hook_changes }
+#				p @commit.hook_changes
+		end
 	end
 end

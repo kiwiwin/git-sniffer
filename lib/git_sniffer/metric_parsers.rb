@@ -1,6 +1,5 @@
 module GitSniffer
 	class MetricParsers
-
 		def self.get(metric)
 			@@parsers[metric]
 		end
