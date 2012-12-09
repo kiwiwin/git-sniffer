@@ -36,6 +36,18 @@ module GitSniffer
 			end
 		end
 
+		def commit_date=(date)
+			@commit_date = date
+		end
+
+		def committer=(committer)
+			@committer = committer
+		end
+
+		def committer_email=(committer_email)
+			@committer_email = committer_email
+		end
+
 		private
 		def lazy_message_source
 			content.split("\n")[-1]
