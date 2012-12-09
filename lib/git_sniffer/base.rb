@@ -54,12 +54,10 @@ module GitSniffer
 		def init_commits
 			@sha_commits = Hash.new
 			exec("log --pretty=format:%H,%ci,%cn,%ce").split("\n").each do |info|
-				infos = info.split(",")
-				sha = infos[0]; date = DateTime.parse(infos[1]); committer = infos[2]; committer_email = infos[3]
-				@sha_commits[sha] = GitSniffer::Commit.new(self, sha)
-				@sha_commits[sha].commit_date = date
-				@sha_commits[sha].committer = committer
-				@sha_commits[sha].committer_email = committer_email
+				field_names = ["commit_date", "committer", "committer_email"]
+				field_values = info.split(",")[1..-1]
+				sha = info.split(",")[0]
+				@sha_commits[sha] = GitSniffer::Commit.new(self, sha, field_names.zip(field_values))
 			end
 			@sha_commits
 		end

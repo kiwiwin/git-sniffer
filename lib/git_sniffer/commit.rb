@@ -8,8 +8,8 @@ module GitSniffer
 		lazy_reader :commit_date, :committer, :committer_email, :init => :get_committer_info
 		lazy_reader :parents
 
-		def initialize(base, sha)
-			super(base, sha)
+		def initialize(base, sha, *fields)
+			super(base, sha, fields)
 			@type = "commit"
 		end
 
@@ -34,18 +34,6 @@ module GitSniffer
 				result[:delete] = $1.to_i if output =~ /(\d+) deletions?\(-\)/
 				result
 			end
-		end
-
-		def commit_date=(date)
-			@commit_date = date
-		end
-
-		def committer=(committer)
-			@committer = committer
-		end
-
-		def committer_email=(committer_email)
-			@committer_email = committer_email
 		end
 
 		private

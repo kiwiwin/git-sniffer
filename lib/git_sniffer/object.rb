@@ -10,9 +10,12 @@ module GitSniffer
 		lazy_reader :type
 		lazy_reader :content
 
-		def initialize(base, sha)
+		def initialize(base, sha, *fields)
 			@base = base
 			@sha = sha
+			if fields[0].is_a?(Hash)
+				fields.each_pair { |key, value| define_singleton_method("#{@key}") { value } }
+			end
 		end
 
 		def lazy_type_source
