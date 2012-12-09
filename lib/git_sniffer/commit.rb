@@ -10,6 +10,7 @@ module GitSniffer
 
 		def initialize(base, sha)
 			super(base, sha)
+			@type = "commit"
 		end
 
 		def blobs

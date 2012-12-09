@@ -6,6 +6,7 @@ module GitSniffer
 
 		def initialize(base, sha)
 			super(base, sha)
+			@type = "blob"
 		end
 
 		def lazy_name_source

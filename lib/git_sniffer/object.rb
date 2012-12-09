@@ -33,7 +33,7 @@ module GitSniffer
 
 		class << self
 			def create_object(base, sha)
-				eval("GitSniffer::#{object_type(base, sha)}").new(base, sha)		
+				GitSniffer.const_get("#{object_type(base, sha)}").new(base, sha)
 			end
 
 			def object_type(base, sha)

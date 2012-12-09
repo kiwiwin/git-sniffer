@@ -10,7 +10,7 @@ module GitSniffer
 		include Lazy
 	
 		attr_reader :path
-		lazy_reader :sha_objects
+		lazy_reader :sha_objects, :sha_commits, :init => :init_objects
 		
 		def initialize(git_path)
 			@path = git_path
@@ -21,15 +21,17 @@ module GitSniffer
 		end
 	
 		def object(sha)
+			raise "no git object with sha #{sha}" if !sha_objects.has_key?(sha)
+			sha_objects[sha] = GitSniffer::Object.create_object(self, sha) if !sha_objects[sha]
 			sha_objects[sha]
-		end
-
-		def shas
-			sha_objects.keys
 		end
 
 		def objects
 			sha_objects.values
+		end
+
+		def commits
+			sha_commits.values
 		end
 
 		class << self
@@ -39,22 +41,22 @@ module GitSniffer
 		end
 
 	private
-		def lazy_sha_objects_source
-			exec("rev-list --all --objects").split("\n").inject({}) do |res, line|
+		def init_objects
+			init_commits
+			@sha_objects = Hash.new.merge(@sha_commits)
+			exec("rev-list --all --objects").split("\n").each do |line|
 				sha = line[0...40]
-				res[sha] = GitSniffer::Object.create_object(self, sha)
-				res
+				@sha_objects[sha] = nil if !@sha_objects.has_key?(sha)
 			end
+			@sha_objects			
 		end
 
-		def method_missing(method_id, *args, &block)
-			types = ["blobs", "commits", "trees"]
-			return type_objects(method_id.to_s.singularize, args[0]) if types.include? method_id.to_s
-			super
-		end
-
-		def type_objects(type, opts)
-			objects.select { |object| object.type == type }
+		def init_commits
+			@sha_commits = Hash.new
+			exec("log --pretty=format:%H").split("\n").each do |sha|
+				@sha_commits[sha] = GitSniffer::Commit.new(self, sha)
+			end
+			@sha_commits
 		end
 	end
 end
